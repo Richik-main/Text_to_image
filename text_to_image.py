@@ -31,13 +31,20 @@ else:
 
 
 #%%
+
 import torch
 from diffusers import StableDiffusionPipeline
 
-model_id = "stabilityai/stable-diffusion-2-1-base"
+# Replace the model_id with the Waifu Diffusion model ID
+model_id = "hakurei/waifu-diffusion"
+# Check if CUDA (NVIDIA GPUs) is available and set the device to GPU
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
-# Load the model with full precision
+
+# Optional: Print the device to confirm
+print(f"Using device: {device}")
+
+# Load the Waifu Diffusion model with full precision
 pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float32)
 pipe.to(device)
 
@@ -51,16 +58,26 @@ def dummy_safety_checker(images, **kwargs):
 
 pipe.safety_checker = dummy_safety_checker
 
-# Set the prompt and generate the image
-prompt = "A planet"
-image = pipe(prompt, height=256, width=256, num_inference_steps=20, guidance_scale=7.5, output_type="pil").images[0]
+# Set the prompt and generate the anime-style image
+prompt = (
+    "A rural village with humble homes, dusty roads, and people living in poverty, "
+    "with a serene yet melancholic atmosphere, surrounded by fields and simple landscapes."
+)
+###num_inference_steps
+#Description: This parameter determines the number of diffusion steps the model takes to generate the image.
+#Example: num_inference_steps=50
+#Role: The more steps, the more gradual and refined the generation process. A higher number typically results in better image quality, as the model has more opportunities to refine the image, but it also takes longer to generate the image. For example, 50 steps is often a good compromise between speed and quality.
+##guidance_scale
+#Description: The guidance_scale controls how strongly the generated image adheres to the given prompt.
+#Example: guidance_scale=7.5
+#Role: A higher guidance scale means the model will focus more on the prompt and less on randomness during the image generation process. This can lead to images that are more aligned with the prompt. However, if the scale is too high, it might distort the image or result in less natural visuals. A typical range is between 5.0 and 10.0, where 7.5 is a balanced choice.
+image = pipe(prompt, height=512, width=512, num_inference_steps=50, guidance_scale=7.5, output_type="pil").images[0]
 
 # Check if the image is not black by verifying its pixel values
 if image.getbbox():
-    image.save("dancing_man.png")
+    image.save("anime_girl.png")
 else:
     print("Generated a black image. Try a different prompt or settings.")
-
 
 
 # %%
