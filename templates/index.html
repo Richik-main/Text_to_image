@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Image Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Anime Style Image</h1>
+        
+        <!-- Form for submitting a custom prompt -->
+        <form method="POST" action="/">
+            <label for="prompt">Enter your prompt:</label><br>
+            <textarea id="prompt" name="prompt" rows="4" cols="50">{{ prompt }}</textarea><br><br>
+            <input type="submit" value="Generate Image">
+        </form>
+        
+        <!-- Display the generated image -->
+        {% if image_url %}
+            <h2>Generated Image:</h2>
+            <img src="{{ image_url }}" alt="Generated Anime Image">
+        {% endif %}
+    </div>
+</body>
+</html>
